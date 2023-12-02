@@ -4,6 +4,7 @@ const AppError = require('./utils/AppError');
 
 // * Importing routers
 const userRouter = require('./routers/userRoutes');
+const plansRouter = require('./routers/plansRoutes');
 
 // * App initialization
 const app = express();
@@ -17,6 +18,7 @@ app.use(express.static(`${__dirname}/public`));
 
 // * Routing
 app.use('/api/v1/users', userRouter);
+app.use('/api/v1/plans', plansRouter);
 
 // * Basic routing
 app.get('/', (req, res) => {

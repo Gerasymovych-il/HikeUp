@@ -7,11 +7,15 @@ const { createHash } = require('node:crypto');
 const AppError = require('../utils/AppError');
 const catchAsyncErrors = require('../utils/catchAsyncErrors');
 
-const signToken = catchAsyncErrors(async (userId) => {
-  return await jwt.sign({ userId }, process.env.JWT_SECRET, {
-    expiresIn: '4h',
-  });
-});
+const signToken = async (userId) => {
+  try {
+    return await jwt.sign({ userId }, process.env.JWT_SECRET, {
+      expiresIn: '4h',
+    });
+  } catch (e) {
+    console.log(e);
+  }
+};
 exports.protect = catchAsyncErrors(async (req, res, next) => {
   // Retrieving token from authorization header;
   const token = req.headers.authorization;

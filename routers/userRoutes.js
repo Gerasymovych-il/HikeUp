@@ -6,6 +6,11 @@ const authController = require('../controllers/authController');
 // * Authentification and authorization routes
 router
   .route('/')
+  .get(
+    authController.protect,
+    authController.restrictedTo('admin'),
+    userController.getAllUsers,
+  )
   .post(
     authController.protect,
     authController.restrictedTo('admin'),
@@ -20,7 +25,14 @@ router
   .delete(authController.protect, authController.setUserStatusToInactive);
 
 // * CRUD operations routes
-router.route('/:id').get(authController.protect, userController.getUserById);
+router
+  .route('/:id')
+  .get(authController.protect, userController.getUserById)
+  .delete(
+    authController.protect,
+    authController.restrictedTo('admin'),
+    userController.deleteUserById,
+  );
 router
   .route('/updateMyPassword')
   .patch(authController.protect, userController.updatePassword);

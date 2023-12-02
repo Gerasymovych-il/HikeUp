@@ -2,6 +2,7 @@ const User = require('../models/userModel');
 const AppError = require('../utils/AppError');
 const catchAsyncErrors = require('../utils/catchAsyncErrors');
 const bcrypt = require('bcrypt');
+const factory = require('./handlersFactory');
 
 const checkFieldsForUpdate = (bodyKeys, prohibitedFields, next) => {
   bodyKeys.forEach((key) => {
@@ -43,10 +44,11 @@ exports.createNewUser = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+exports.deleteUserById = factory.deleteOne(User);
 exports.getUserById = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findById(req.params.id);
 
-  if (!user) return next(new AppError('Can`t find user with this id', 400));
+  if (!user) return next(new AppError('Can`t find user with this id', 404));
 
   res.status(200).json({
     status: 'success',
@@ -56,6 +58,16 @@ exports.getUserById = catchAsyncErrors(async (req, res, next) => {
   });
 });
 
+exports.getAllUsers = catchAsyncErrors(async (req, res, next) => {
+  const users = await User.find({});
+  res.status(200).json({
+    status: 'success',
+    results: users.length,
+    data: {
+      users,
+    },
+  });
+});
 exports.updatePassword = catchAsyncErrors(async (req, res, next) => {
   const user = await User.findById(req.user._id).select('+password').exec();
 
