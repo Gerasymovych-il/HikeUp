@@ -53,8 +53,7 @@ const userSchema = new Schema({
       validator: function (email) {
         return /^([a-zA-Z0-9._%-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,})$/.test(email);
       },
-      message:
-        'PasswordConfirm should contain minimum eight characters, at least one letter and one number',
+      message: 'Provide valid email!',
     },
     unique: [true, 'User with this email already exists'],
   },
@@ -109,7 +108,6 @@ userSchema.methods.checkIfPasswordWasChanged = function (requestTimestamp) {
     const passwordChangeTimestamp = this.passwordChangeDate.getTime() / 1000;
     if (passwordChangeTimestamp > requestTimestamp) return true;
   }
-
   return false;
 };
 
