@@ -3,6 +3,16 @@ const { Schema } = mongoose;
 
 const photoLimit = (arr) => arr.length < 5;
 const tagsLimit = (arr) => arr.length < 6;
+const validateMediaFiles = (array) => {
+  const regex = new RegExp(
+    /[^\s]+(.*?).(jpe?g|png|gif|bmp|mp4|mov|avi|flv|wmv)$/,
+  );
+  let res = true;
+  array.forEach((string) => {
+    if (!regex.test(string)) res = false;
+  });
+  return res;
+};
 
 const descriptionSchema = new Schema({
   shortDesc: {
@@ -17,9 +27,18 @@ const descriptionSchema = new Schema({
       'Short description should be maximum 2500 characters long',
     ],
   },
-  photos: {
+  media: {
     type: [String],
-    validate: [photoLimit, 'You can not upload more then 4 photo'],
+    validate: [
+      {
+        validator: photoLimit,
+        msg: 'You can not upload more then 4 media files',
+      },
+      {
+        validator: validateMediaFiles,
+        msg: 'Only jpe?g|png|gif|bmp|mp4|mov|avi|flv|wmv are allowed',
+      },
+    ],
   },
   tags: {
     type: [String],
